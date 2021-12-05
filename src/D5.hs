@@ -1,7 +1,6 @@
 module D5 ( format
           , part1
           , part2
-          , diagonal
           ) where
 
 import Data.List.Split (splitOn)

@@ -23,7 +23,6 @@ import qualified D4 ( format
 import qualified D5 ( format
                     , part1
                     , part2
-                    , diagonal
                     )
 
 runDay :: (Show b, Show c) => String -> (a -> b) -> (a -> c) -> (String -> a) -> IO ()
