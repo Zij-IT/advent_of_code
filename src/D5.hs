@@ -17,11 +17,16 @@ format = map (arrayToPoints . concat . ((map splitCommas) . splitOn " -> ")) . l
     arrayToPoints :: [Int] -> (Point, Point)
     arrayToPoints = (\[x1, y1, x2, y2] -> ((x1, y1), (x2, y2)))
 
+range :: Int -> Int -> [Int]
+range a b
+  | a < b = [a..b]
+  | otherwise = [a, (a-1) .. b]
+
 toLine :: (Point, Point) -> (Int -> Int -> Int -> Int -> [Point]) -> [Point]
-toLine ((x1, y1), (x2, y2)) f = case (compare x1 x2, compare y1 y2) of
-    (EQ,  _)  -> [(x1, y) | y <- [min y1 y2 .. max y1 y2]]
-    (_ , EQ)  -> [(x, y1) | x <- [min x1 x2 .. max x1 x2]]
-    otherwise -> f x1 y1 x2 y2
+toLine ((x1, y1), (x2, y2)) f
+  | x1 == x2 = [(x1, y) | y <- range y1 y2]
+  | y1 == y2 = [(x, y1) | x <- range x1 x2]
+  | otherwise = f x1 y1 x2 y2
 
 sharedSolve :: [Point] -> Int
 sharedSolve = Map.size . Map.filter (>= 2) . Map.fromListWith (+) . flip zip (repeat 1)
@@ -30,19 +35,4 @@ part1 :: [(Point, Point)] -> Int
 part1 = sharedSolve . concat . map (flip toLine (\_ _ _ _ -> []))
 
 part2 :: [(Point, Point)] -> Int
-part2 = sharedSolve . concat . map (flip toLine diagonal)
-  where
-    diagonal :: Int -> Int -> Int -> Int -> [Point]
-    diagonal x1 y1 x2 y2 = map (\z -> (x1 + z * fst slope, y1 + z * snd slope)) [0 .. abs x]
-      where
-      x :: Int
-      x = x2 - x1
-
-      y :: Int
-      y = y2 - y1
-
-      slope :: (Int, Int)
-      slope = case (x /= 0, y /= 0) of
-        (True, _) -> (quot x (abs x), quot y (abs x))
-        (_, True) -> (quot x (abs x), quot y (abs x))
-        _ -> (x, y)
+part2 = sharedSolve . concat . map (flip toLine (\x1 y1 x2 y2 -> zip (range x1 x2) (range y1 y2)))
