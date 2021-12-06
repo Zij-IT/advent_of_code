@@ -8,12 +8,10 @@ format :: String -> [Int]
 format = map read . lines
 
 windows :: [a] -> [[a]]
-windows (x:y:[]) = [[x, y]]
-windows (x:y:xs) = [[x,y]] ++ windows (y:xs)
+windows xs = zipWith (\x y -> [x, y]) xs (drop 1 xs)
 
 tripletSum :: [Int] -> [Int]
-tripletSum (x:y:z:[]) = [x + y + z]
-tripletSum (x:y:z:xs) = [x + y + z] ++ tripletSum (y:z:xs)
+tripletSum xs = zipWith3 (\x y z -> x + y + z) xs (drop 1 xs) (drop 2 xs)
 
 part1 :: [Int] -> Int
 part1 = length . filter (\[x, y] -> y > x) . windows
