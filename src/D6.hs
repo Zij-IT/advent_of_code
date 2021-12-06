@@ -21,13 +21,9 @@ age (fishAge, count)
  | fishAge == 0 = [(6, count), (8, count)]
  | otherwise = [(fishAge - 1, count)]
 
-nthGeneration :: Int -> Input -> Input
-nthGeneration 0 xs = xs
-nthGeneration n xs = nthGeneration (n - 1) (step xs)
-
 part1 :: Input -> Int
-part1 = sum . Map.elems . nthGeneration 80
+part1 = sum . Map.elems . (!! 80) . iterate step
 
 part2 :: Input -> Int
-part2 = sum . Map.elems . nthGeneration 256
+part2 = sum . Map.elems . (!! 256) . iterate step
 
