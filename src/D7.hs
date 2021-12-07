@@ -14,7 +14,6 @@ format s = read $ concat ["[", s, "]"]
 median :: [Int] -> Int
 median = ap (!!) (flip quot 2 . length)
 
-
 part1 :: Input -> Int
 part1 xs = sum $ map (abs . (`subtract` medium)) xs
   where
