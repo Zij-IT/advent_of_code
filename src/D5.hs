@@ -9,13 +9,13 @@ import qualified Data.Map.Strict as Map
 type Point = (Int, Int)
 
 format :: String -> [(Point, Point)]
-format = map (arrayToPoints . concat . ((map splitCommas) . splitOn " -> ")) . lines
+format = map (arrayToPoints . concatMap splitCommas . splitOn " -> ") . lines
   where
     splitCommas :: String -> [Int]
-    splitCommas = (map read) . splitOn ","
+    splitCommas = map read . splitOn ","
 
     arrayToPoints :: [Int] -> (Point, Point)
-    arrayToPoints = (\[x1, y1, x2, y2] -> ((x1, y1), (x2, y2)))
+    arrayToPoints = \[x1, y1, x2, y2] -> ((x1, y1), (x2, y2))
 
 range :: Int -> Int -> [Int]
 range a b
@@ -32,7 +32,7 @@ sharedSolve :: [Point] -> Int
 sharedSolve = Map.size . Map.filter (>= 2) . Map.fromListWith (+) . flip zip (repeat 1)
 
 part1 :: [(Point, Point)] -> Int
-part1 = sharedSolve . concat . map (flip toLine (\_ _ _ _ -> []))
+part1 = sharedSolve . concatMap (`toLine` (\_ _ _ _ -> []))
 
 part2 :: [(Point, Point)] -> Int
-part2 = sharedSolve . concat . map (flip toLine (\x1 y1 x2 y2 -> zip (range x1 x2) (range y1 y2)))
+part2 = sharedSolve . concatMap (`toLine` (\x1 y1 x2 y2 -> zip (range x1 x2) (range y1 y2)))
