@@ -11,7 +11,7 @@ type Count = Int
 type Input = Map.Map Age Count
 
 format :: String -> Input
-format s = Map.fromListWith (+) $ (zip (read $ concat ["[", s, "]"]) (repeat 1))
+format s = Map.fromListWith (+) $ zip (read $ concat ["[", s, "]"]) (repeat 1)
 
 step :: Input -> Input
 step = Map.fromListWith (+) . concatMap age . Map.toList
