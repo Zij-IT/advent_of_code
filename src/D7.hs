@@ -12,19 +12,22 @@ format :: String -> Input
 format s = read $ concat ["[", s, "]"]
 
 median :: [Int] -> Int
-median = ap (!!) (flip quot 2 . length)
+median xs = xs !! quot (length xs) 2
 
 part1 :: Input -> Int
-part1 xs = sum $ map (abs . (`subtract` medium)) xs
+part1 xs = foldr ((+) . abs . (`subtract` medium)) 0 xs
   where
     medium :: Int
     medium = median $ sort xs
 
 part2 :: Input -> Int
-part2 xs = sum $ map cost xs
+part2 xs = foldr ((+) . cost) 0 xs
   where
     mean :: Int
     mean = quot (sum xs) (length xs)
 
     cost :: Int -> Int
-    cost x = sum [1 .. (abs $ x - mean)]
+    cost x = quot (diff * succ diff) 2
+      where
+        diff :: Int
+        diff = abs $ x - mean
