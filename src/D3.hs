@@ -4,7 +4,7 @@ module D3
   , part2
   ) where
 
-import Data.Bits (complement, (.&.), shiftR)
+import Data.Bits (complement, (.&.), shiftL)
 import Data.Char (digitToInt)
 import Data.List (transpose)
 import Control.Monad (liftM2)
@@ -25,12 +25,11 @@ mostCommon xs = map f' $ tupleCount xs
     f' (a, b) = if a >= b then 1 else 0
 
 listToDecimal :: [Int] -> Int
-listToDecimal (x:[]) = x
-listToDecimal (x:xs) = 2 ^ (length xs) * x + listToDecimal xs
+listToDecimal xs = sum $ zipWith (\x y -> 2^y * x) xs [pow, pow - 1 .. 0]
+  where pow = length xs - 1
 
 nextPowerOf2 :: Int -> Int
-nextPowerOf2 0 = 1
-nextPowerOf2 x = 2 * nextPowerOf2 (shiftR x 1)
+nextPowerOf2 x = head $ dropWhile (< x) (iterate (`shiftL` 1) 1)
 
 complement' :: Int -> Int
 complement' = liftM2 (.&.) complement (subtract 1 . nextPowerOf2)
