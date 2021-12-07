@@ -13,7 +13,8 @@ type Board = [[Int]]
 
 extractBoards :: [String] -> [Board]
 extractBoards [] = []
-extractBoards (w:a:b:c:d:e:xs) = [map (map read . words) [a,b,c,d,e]] ++ extractBoards xs
+extractBoards (_:a:b:c:d:e:xs) = map (map read . words) [a,b,c,d,e] : extractBoards xs
+_ = error "Bad input"
 
 format :: String -> ([Int], [Board])
 format xs = (header, boards)
@@ -23,7 +24,7 @@ format xs = (header, boards)
     boards = extractBoards (tail inputLines)
 
 getLastIdx :: [Int] -> [[Int]] -> [[Int]]
-getLastIdx header xs = map (map (fromJust . flip elemIndex header)) xs
+getLastIdx header = map (map (fromJust . flip elemIndex header))
 
 sharedPart ::
   (((Int, Int) -> (Int, Int) -> Ordering) -> [(Int, Int)] -> (Int, Int))
@@ -32,10 +33,10 @@ sharedPart ::
 sharedPart compBy (header, boards) = pulled * nonMarkedSum
   where
     minIdx :: [[Int]] -> Int
-    minIdx xs = minimum . map (maximum) $ getLastIdx header xs
+    minIdx xs = minimum . map maximum $ getLastIdx header xs
 
     minIndices :: [Int]
-    minIndices = map (minIdx . (ap (++) transpose)) boards
+    minIndices = map (minIdx . ap (++) transpose) boards
 
     indexTuple :: (Int, Int)
     indexTuple = compBy (compare `on` snd) $ zip [0..] minIndices
@@ -44,7 +45,7 @@ sharedPart compBy (header, boards) = pulled * nonMarkedSum
     boardId = fst indexTuple
 
     nonMarkedSum :: Int
-    nonMarkedSum = sum $ filter (flip elem (drop (1 + idx) header)) (concat $ boards !! boardId)
+    nonMarkedSum = sum $ filter (`elem` drop (1 + idx) header) (concat $ boards !! boardId)
 
     idx :: Int
     idx = snd indexTuple
