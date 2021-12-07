@@ -11,10 +11,11 @@ format :: String -> [Command]
 format = map stringToCommand . lines
 
 stringToCommand :: String -> Command
-stringToCommand xs = case break (\x -> x == ' ') xs of
+stringToCommand xs = case break (== ' ') xs of
     ("forward", num) -> Forward (read num :: Int)
     ("down", num) -> Down (read num :: Int)
     ("up", num) -> Up (read num :: Int)
+    _ -> error "Bad input"
 
 applyCommandPt1 :: Command -> (Int, Int) -> (Int, Int)
 applyCommandPt1 cmd (x, y) = case cmd of
