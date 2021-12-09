@@ -14,14 +14,14 @@ type Input = [[Int]]
 format :: String -> Input
 format = map (map digitToInt) . lines
 
-tupleCount :: Input -> [(Int, Int)]
-tupleCount xs = map (foldr f' (0, 0)) $ transpose xs
+columnCount :: Input -> [(Int, Int)]
+columnCount = map (foldr f' (0, 0)) . transpose
   where
     f' :: Int -> (Int, Int) -> (Int, Int)
     f' x (a, b) = (a + x .&. 1, b + 1 - x)
 
 mostCommon :: Input -> [Int]
-mostCommon xs = map f' $ tupleCount xs
+mostCommon = map f' . columnCount
   where
     f' :: (Int, Int) -> Int
     f' (a, b) = if a >= b then 1 else 0
