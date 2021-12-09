@@ -38,7 +38,7 @@ part2 :: Input -> Int
 part2 xs = product . take 3 . reverse . sort . map (length . basins xs []) . filter (isSmallest xs) $ allCoords xs
   where
     basins :: Input -> [Pair] -> Pair -> [Pair]
-    basins xs checked p = if isJust(index xs p) && index xs p < Just 9 && p `notElem` checked then
+    basins xs checked p = if isJust (index xs p) && index xs p < Just 9 && p `notElem` checked then
       let [a, b, c, d] = getNeighbors p
           b' = basins xs (p:checked) a
           c' = basins xs b' b
