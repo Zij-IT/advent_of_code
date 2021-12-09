@@ -32,10 +32,10 @@ isSmallest :: Input -> Pair -> Bool
 isSmallest xs (x, y) = all (> (fromJust $ index xs (x, y))) $ catMaybes $ neighborValues xs (x, y)
 
 part1 :: Input -> Int
-part1 xs = sum . mapMaybe (fmap (+1) . index xs) $ filter (isSmallest xs) $ allCoords xs
+part1 xs = sum . mapMaybe (fmap (+1) . index xs) . filter (isSmallest xs) $ allCoords xs
 
 part2 :: Input -> Int
-part2 xs = product . take 3 . reverse . sort . map (length . basins xs []) $ filter (isSmallest xs) $ allCoords xs
+part2 xs = product . take 3 . reverse . sort . map (length . basins xs []) . filter (isSmallest xs) $ allCoords xs
   where
     basins :: Input -> [Pair] -> Pair -> [Pair]
     basins xs checked p = if isJust(index xs p) && index xs p < Just 9 && p `notElem` checked then
