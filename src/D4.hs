@@ -23,8 +23,8 @@ format xs = (header, boards)
     header = map read $ splitOn "," $ head inputLines
     boards = extractBoards (tail inputLines)
 
-getLastIdx :: [Int] -> [[Int]] -> [[Int]]
-getLastIdx header = map (map (fromJust . flip elemIndex header))
+pullTime :: [Int] -> [[Int]] -> [[Int]]
+pullTime header = map (map (fromJust . (`elemIndex` header)))
 
 sharedPart ::
   (((Int, Int) -> (Int, Int) -> Ordering) -> [(Int, Int)] -> (Int, Int))
@@ -32,26 +32,21 @@ sharedPart ::
  -> Int
 sharedPart compBy (header, boards) = pulled * nonMarkedSum
   where
-    minIdx :: [[Int]] -> Int
-    minIdx xs = minimum . map maximum $ getLastIdx header xs
+    minTime :: [[Int]] -> Int
+    minTime xs = minimum . map maximum $ pullTime header xs
 
-    minIndices :: [Int]
-    minIndices = map (minIdx . ap (++) transpose) boards
-
-    indexTuple :: (Int, Int)
-    indexTuple = compBy (compare `on` snd) $ zip [0..] minIndices
+    minTimes :: [Int]
+    minTimes = map (minTime . ap (++) transpose) boards
 
     boardId :: Int
-    boardId = fst indexTuple
+    time :: Int
+    (boardId, time) = compBy (compare `on` snd) $ zip [0..] minTimes
 
     nonMarkedSum :: Int
-    nonMarkedSum = sum $ filter (`elem` drop (1 + idx) header) (concat $ boards !! boardId)
-
-    idx :: Int
-    idx = snd indexTuple
+    nonMarkedSum = sum $ filter (`elem` drop (1 + time) header) (concat $ boards !! boardId)
 
     pulled :: Int
-    pulled = header !! idx
+    pulled = header !! time
 
 part1 :: ([Int], [Board]) -> Int
 part1 = sharedPart minimumBy
