@@ -27,12 +27,6 @@ mostCommon xs = map f' $ tupleCount xs
     f' (a, b) = if a >= b then 1 else 0
 
 listToDecimal :: [Int] -> Int
-
-nextPowerOf2 :: Int -> Int
-nextPowerOf2 x = head $ dropWhile (< x) (iterate (`shiftL` 1) 1)
-
-complement' :: Int -> Int
-complement' = liftM2 (.&.) complement (subtract 1 . nextPowerOf2)
 listToDecimal = foldl (\sum bit -> 2 * sum + bit) 0
 
 part1 :: Input -> Int
