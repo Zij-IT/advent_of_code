@@ -4,10 +4,9 @@ module D3
   , part2
   ) where
 
-import Data.Bits (complement, (.&.), shiftL)
+import Data.Bits ((.&.))
 import Data.Char (digitToInt)
 import Data.List (transpose)
-import Control.Monad (liftM2)
 
 type Input = [[Int]]
 
