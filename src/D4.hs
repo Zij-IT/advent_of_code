@@ -10,13 +10,15 @@ import Data.Maybe (fromJust)
 import Control.Monad (ap)
 
 type Board = [[Int]]
+type Input = ([Int], [Board])
+type OrderingFunction = (((Int, Int) -> (Int, Int) -> Ordering) -> [(Int, Int)] -> (Int, Int))
 
 extractBoards :: [String] -> [Board]
 extractBoards [] = []
 extractBoards (_:a:b:c:d:e:xs) = map (map read . words) [a,b,c,d,e] : extractBoards xs
 _ = error "Bad input"
 
-format :: String -> ([Int], [Board])
+format :: String -> Input
 format xs = (header, boards)
   where
     inputLines = lines xs
@@ -26,10 +28,7 @@ format xs = (header, boards)
 pullTime :: [Int] -> [[Int]] -> [[Int]]
 pullTime header = map (map (fromJust . (`elemIndex` header)))
 
-sharedPart ::
-  (((Int, Int) -> (Int, Int) -> Ordering) -> [(Int, Int)] -> (Int, Int))
- -> ([Int], [Board])
- -> Int
+sharedPart :: OrderingFunction -> Input -> Int
 sharedPart compBy (header, boards) = pulled * nonMarkedSum
   where
     minTime :: [[Int]] -> Int
@@ -48,8 +47,8 @@ sharedPart compBy (header, boards) = pulled * nonMarkedSum
     pulled :: Int
     pulled = header !! time
 
-part1 :: ([Int], [Board]) -> Int
+part1 :: Input -> Int
 part1 = sharedPart minimumBy
 
-part2 :: ([Int], [Board]) -> Int
+part2 :: Input -> Int
 part2 = sharedPart maximumBy
