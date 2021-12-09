@@ -26,16 +26,14 @@ mostCommon xs = map f' $ tupleCount xs
     f' :: (Int, Int) -> Int
     f' (a, b) = if a >= b then 1 else 0
 
--- The trouble you have to go through for getting a backwards range
 listToDecimal :: [Int] -> Int
-listToDecimal xs = sum $ zipWith (\x y -> 2^y * x) xs [pow, pow - 1 .. 0]
-  where pow = length xs - 1
 
 nextPowerOf2 :: Int -> Int
 nextPowerOf2 x = head $ dropWhile (< x) (iterate (`shiftL` 1) 1)
 
 complement' :: Int -> Int
 complement' = liftM2 (.&.) complement (subtract 1 . nextPowerOf2)
+listToDecimal = foldl (\sum bit -> 2 * sum + bit) 0
 
 part1 :: Input -> Int
 part1 xs = gamma * complement' gamma
