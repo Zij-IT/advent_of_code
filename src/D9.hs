@@ -29,7 +29,7 @@ neighborValues :: Input -> Pair -> [Maybe Int]
 neighborValues xs = map (index xs) . getNeighbors
 
 isSmallest :: Input -> Pair -> Bool
-isSmallest xs (x, y) = all (> (fromJust $ index xs (x, y))) $ catMaybes $ neighborValues xs (x, y)
+isSmallest xs p = all (> (fromJust $ index xs p)) $ catMaybes $ neighborValues xs p
 
 part1 :: Input -> Int
 part1 xs = sum . mapMaybe (fmap (+1) . index xs) . filter (isSmallest xs) $ allCoords xs
