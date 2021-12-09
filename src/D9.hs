@@ -16,11 +16,11 @@ format = map (map digitToInt) . lines
 (!?) :: Int -> [a] -> Maybe a
 (!?) n xs = if n >= 0 && (length xs > n) then Just (xs !! n) else Nothing
 
-allCoords :: Input -> [Pair]
-allCoords xs = [(x, y) | y <- [0 .. length xs - 1], x <- [0 .. length (head xs) - 1]]
-
 index :: Input -> Pair -> Maybe Int
 index xs (x, y) = (y !? xs) >>= (x !?)
+
+allCoords :: Input -> [Pair]
+allCoords xs = [(x, y) | y <- [0 .. length xs - 1], x <- [0 .. length (head xs) - 1]]
 
 getNeighbors :: Pair -> [Pair]
 getNeighbors (x, y) = [(x + x', y + y') | (x', y') <- [(1, 0), (0, 1), (-1, 0), (0, -1)]]
