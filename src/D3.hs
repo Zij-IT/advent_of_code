@@ -30,10 +30,10 @@ listToDecimal :: [Int] -> Int
 listToDecimal = foldl (\sum bit -> 2 * sum + bit) 0
 
 part1 :: Input -> Int
-part1 xs = gamma * complement' gamma
+part1 xs = gamma * epsilon
   where
-    gamma :: Int
-    gamma = listToDecimal $ mostCommon xs
+    gamma   = listToDecimal $ mostCommon xs
+    epsilon = listToDecimal $ map (1-) $ mostCommon xs
 
 part2 :: Input -> Int
 part2 xs = oxy * co2
