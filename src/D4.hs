@@ -31,7 +31,7 @@ sharedPart :: OrderingFunction -> Input -> Int
 sharedPart compBy (header, boards) = pulled * nonMarkedSum
   where
     minTime :: [[Int]] -> Int
-    minTime xs = minimum . map maximum $ pullTime header xs
+    minTime = minimum . map maximum . pullTime header
 
     minTimes :: [Int]
     minTimes = map (minTime . ap (++) transpose) boards
