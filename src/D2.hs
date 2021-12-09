@@ -7,7 +7,9 @@ module D2
 data Command = Forward Int | Down Int | Up Int
     deriving (Show)
 
-format :: String -> [Command]
+type Input = [Command]
+
+format :: String -> Input
 format = map stringToCommand . lines
 
 stringToCommand :: String -> Command
@@ -29,8 +31,8 @@ applyCommandPt2 cmd (x, y, aim) = case cmd of
     Down num -> (x, y, aim + num)
     Forward num -> (x + num, y + aim * num, aim)
 
-part1 :: [Command] -> Int
+part1 :: Input -> Int
 part1 = uncurry (*) . foldr applyCommandPt1 (0, 0)
 
-part2 :: [Command] -> Int
+part2 :: Input -> Int
 part2 = uncurry (*) . (\(x, y, z) -> (x, y)) . foldl (flip applyCommandPt2) (0, 0, 0)
