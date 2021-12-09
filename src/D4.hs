@@ -25,7 +25,7 @@ format xs = (header, boards)
     boards = extractBoards . tail $ lines xs
 
 pullTime :: [Int] -> [[Int]] -> [[Int]]
-pullTime header = map (map (fromJust . (`elemIndex` header)))
+pullTime header = map $ map $ fromJust . (`elemIndex` header)
 
 sharedPart :: OrderingFunction -> Input -> Int
 sharedPart compBy (header, boards) = pulled * nonMarkedSum
@@ -41,7 +41,7 @@ sharedPart compBy (header, boards) = pulled * nonMarkedSum
     (boardId, time) = compBy (compare `on` snd) $ zip [0..] minTimes
 
     nonMarkedSum :: Int
-    nonMarkedSum = sum $ filter (`elem` drop (1 + time) header) (concat $ boards !! boardId)
+    nonMarkedSum = sum . filter (`elem` drop (1 + time) header) . concat $ boards !! boardId
 
     pulled :: Int
     pulled = header !! time
