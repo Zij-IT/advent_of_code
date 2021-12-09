@@ -16,13 +16,13 @@ type OrderingFunction = (((Int, Int) -> (Int, Int) -> Ordering) -> [(Int, Int)] 
 format :: String -> Input
 format xs = (header, boards)
   where
-    inputLines = lines xs
-    header = map read $ splitOn "," $ head inputLines
-    boards = extractBoards (tail inputLines)
     extractBoards :: [String] -> [Board]
     extractBoards [] = []
     extractBoards (_:a:b:c:d:e:xs) = map (map read . words) [a,b,c,d,e] : extractBoards xs
     extractBoards _ = error "Bad input"
+
+    header = map read . splitOn "," . head $ lines xs
+    boards = extractBoards . tail $ lines xs
 
 pullTime :: [Int] -> [[Int]] -> [[Int]]
 pullTime header = map (map (fromJust . (`elemIndex` header)))
