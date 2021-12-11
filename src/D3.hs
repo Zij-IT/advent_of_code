@@ -28,6 +28,18 @@ mostCommon = map f' . columnCount
 listToDecimal :: [Int] -> Int
 listToDecimal = foldl (\sum bit -> 2 * sum + bit) 0
 
+-- Explanation:
+-- Part 1: This one just involves finding the most bit for each column, and multiplying by the
+--         inverse. This was super easy thanks to transpose, and then just folding it.
+--         The fold function can be understood as:
+--         f' x (a, b) = (a + if x == 1 then 1 else 0, b + if x == 0 then 1 else 0).
+--         I wanted to do it branchless, so I used the bitwise &, and (1 - 0)
+-- Part 2: The base function used to get the rating is almost entirely the same.
+--         The first function wants to check if the bits are equal to the most common rating
+--         and the second wants to check if they are equal to the inverse. As we are dealing
+--         only with 1 and 0, the second can be said to be checking if the bits are NOT equal
+--         to the most common at position X.
+
 part1 :: Input -> Int
 part1 xs = gamma * epsilon
   where
