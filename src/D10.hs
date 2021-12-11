@@ -54,5 +54,5 @@ part1 :: Input -> Output
 part1 = sum . mapMaybe (fmap scoreCorruption . onlyLeft . (`evaluate` []))
 
 part2 :: Input -> Int
-part2 = median . dropWhile (==0) . sort . map (foldl (\acc x -> 5 * acc + x) 0 . map scoreCompletion . onlyRight . (`evaluate` []))
+part2 = median . dropWhile (== 0) . sort . map (foldl (\acc x -> 5 * acc + x) 0 . map scoreCompletion . onlyRight . (`evaluate` []))
   where median xs = xs !! quot (length xs) 2

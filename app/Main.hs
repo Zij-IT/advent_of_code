@@ -50,6 +50,11 @@ import qualified D10 ( format
                     , part2
                     )
 
+import qualified D11 ( format
+                    , part1
+                    , part2
+                    )
+
 runDay :: (Show b, Show c) => String -> (a -> b) -> (a -> c) -> (String -> a) -> IO ()
 runDay file pt1 pt2 format = do
   putStrLn $ "Running '" ++ file ++ "'"
@@ -70,3 +75,4 @@ main = do
     runDay "./data/d8.txt" D8.part1 D8.part2 D8.format
     runDay "./data/d9.txt" D9.part1 D9.part2 D9.format
     runDay "./data/d10.txt" D10.part1 D10.part2 D10.format
+    runDay "./data/d11.txt" D11.part1 D11.part2 D11.format
