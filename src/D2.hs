@@ -14,9 +14,9 @@ format = map stringToCommand . lines
 
 stringToCommand :: String -> Command
 stringToCommand xs = case break (== ' ') xs of
-    ("forward", num) -> Forward (read num :: Int)
-    ("down", num) -> Down (read num :: Int)
-    ("up", num) -> Up (read num :: Int)
+    ('f':_, num) -> Forward (read num :: Int)
+    ('d':_, num) -> Down (read num :: Int)
+    ('u':_, num) -> Up (read num :: Int)
     _ -> error "Bad input"
 
 applyCommandPt1 :: Command -> (Int, Int) -> (Int, Int)
@@ -35,4 +35,4 @@ part1 :: Input -> Int
 part1 = uncurry (*) . foldr applyCommandPt1 (0, 0)
 
 part2 :: Input -> Int
-part2 = uncurry (*) . (\(x, y, z) -> (x, y)) . foldl (flip applyCommandPt2) (0, 0, 0)
+part2 = (\(x, y, z) -> x * y) . foldl (flip applyCommandPt2) (0, 0, 0)
