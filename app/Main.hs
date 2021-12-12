@@ -55,12 +55,17 @@ import qualified D11 ( format
                     , part2
                     )
 
+import qualified D12 ( format
+                    , part1
+                    , part2
+                    )
+
 runDay :: (Show b, Show c) => String -> (a -> b) -> (a -> c) -> (String -> a) -> IO ()
 runDay file pt1 pt2 format = do
   putStrLn $ "Running '" ++ file ++ "'"
   input <- readFile file
-  print $ (++) "------ Part 1: " $ show $ pt1 $ format input
-  print $ (++) "------ Part 2: " $ show $ pt2 $ format input
+  putStrLn $ (++) "------ Part 1: " $ show $ pt1 $ format input
+  putStrLn $ (++) "------ Part 2: " $ show $ pt2 $ format input
 
 main :: IO ()
 main = do
@@ -76,3 +81,4 @@ main = do
     runDay "./data/d9.txt" D9.part1 D9.part2 D9.format
     runDay "./data/d10.txt" D10.part1 D10.part2 D10.format
     runDay "./data/d11.txt" D11.part1 D11.part2 D11.format
+    runDay "./data/d12.txt" D12.part1 D12.part2 D12.format

@@ -36,6 +36,8 @@ library
       D9
       D10
       D11
+      D12
+
   other-modules:
       Paths_AdventOfCode
   hs-source-dirs:
