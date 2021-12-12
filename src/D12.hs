@@ -12,38 +12,38 @@ import Data.Char (isUpper, isLower)
 type Input = M.Map PathNode [PathNode]
 type Output = Int
 
-type PathPredicate = Path -> PathNode -> Bool
 type PathNode = String
 type Path = [PathNode]
 
 format :: String -> Input
 format = M.fromListWith (++) . concatMap ((\[from, to] -> [(from, [to]), (to, [from])]) . splitOn "-") . lines
 
-exploreCaves :: Input -> PathPredicate -> PathNode -> Path -> [Path] -> [Path]
-exploreCaves caveMap pred currCave explored pathsToEnd = if currCave == "end"
-  then [currCave:explored]
-  else pathsToEnd ++ goodPaths
+exploreCaves :: Input -> PathNode -> Path -> Bool -> Int
+exploreCaves caveMap currCave explored twoSmall = if currCave == "end" then 1 else goodPaths
   where
-    allowedExplore :: [PathNode]
-    allowedExplore = filter (pred (currCave:explored)) $ caveMap M.! currCave
+    newPath :: Path
+    newPath = currCave:explored
 
-    goodPaths :: [Path]
-    goodPaths = concatMap (\cave -> exploreCaves caveMap pred cave (currCave:explored) pathsToEnd) allowedExplore
+    hasTwoSmall :: Bool
+    hasTwoSmall = twoSmall || (any ((>1) . length) . group . sort $ filter (isLower . head) newPath)
 
-sharedSolve :: Input -> PathPredicate -> Output
-sharedSolve caveMap pred = length $ exploreCaves caveMap pred "start" [] []
-
-part1 :: Input -> Output
-part1 = flip sharedSolve pred
-  where pred path cave = cave `notElem` path || all isUpper cave
-
-part2 :: Input -> Output
-part2 = flip sharedSolve pred
-  where
-    hasDouble = any (\xs -> length xs > 1) . group . sort . filter (isLower . head)
-
-    pred :: Path -> PathNode -> Bool
-    pred path cave = case cave of
+    canInsert :: Path -> PathNode -> Bool
+    canInsert path cave = case cave of
       "end" -> cave `notElem` path
       "start" -> cave `notElem` path
-      _ -> not (hasDouble path) || cave `notElem` path || all isUpper cave
+      _ -> not hasTwoSmall || cave `notElem` path || all isUpper cave
+
+    allowedExplore :: [PathNode]
+    allowedExplore = filter (canInsert newPath) $ caveMap M.! currCave
+
+    goodPaths :: Int
+    goodPaths = sum $ map (\cave -> exploreCaves caveMap cave newPath hasTwoSmall) allowedExplore
+
+sharedSolve :: Input -> Bool -> Output
+sharedSolve caveMap = exploreCaves caveMap "start" []
+
+part1 :: Input -> Output
+part1 = flip sharedSolve True
+
+part2 :: Input -> Output
+part2 = flip sharedSolve False

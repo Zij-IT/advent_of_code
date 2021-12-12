@@ -54,7 +54,8 @@ executable AdventOfCode-exe
       Paths_AdventOfCode
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -optlo-O3 -optlc-O3 -optlo-mem2reg -O3 -threaded -rtsopts
+  ghc-prof-options: -rtsopts -Wall -prof -auto-all -fprof-auto -auto-all -caf-all
   build-depends:
       AdventOfCode
     , base >=4.7 && <5
