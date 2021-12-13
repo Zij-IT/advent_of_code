@@ -1,64 +1,18 @@
 module Main where
 
-import qualified D1 ( format
-                    , part1
-                    , part2
-                    )
-
-import qualified D2 ( format
-                    , part1
-                    , part2
-                    )
-
-import qualified D3 ( format
-                    , part1
-                    , part2
-                    )
-
-import qualified D4 ( format
-                    , part1
-                    , part2
-                    )
-
-import qualified D5 ( format
-                    , part1
-                    , part2
-                    )
-
-import qualified D6 ( format
-                    , part1
-                    , part2
-                    )
-
-import qualified D7 ( format
-                    , part1
-                    , part2
-                    )
-
-import qualified D8 ( format
-                    , part1
-                    , part2
-                    )
-
-import qualified D9 ( format
-                    , part1
-                    , part2
-                    )
-
-import qualified D10 ( format
-                    , part1
-                    , part2
-                    )
-
-import qualified D11 ( format
-                    , part1
-                    , part2
-                    )
-
-import qualified D12 ( format
-                    , part1
-                    , part2
-                    )
+import qualified D1
+import qualified D2
+import qualified D3
+import qualified D4
+import qualified D5
+import qualified D6
+import qualified D7
+import qualified D8
+import qualified D9
+import qualified D10
+import qualified D11
+import qualified D12
+import qualified D13
 
 runDay :: (Show b, Show c) => String -> (a -> b) -> (a -> c) -> (String -> a) -> IO ()
 runDay file pt1 pt2 format = do
@@ -66,6 +20,13 @@ runDay file pt1 pt2 format = do
   input <- readFile file
   putStrLn $ (++) "------ Part 1: " $ show $ pt1 $ format input
   putStrLn $ (++) "------ Part 2: " $ show $ pt2 $ format input
+
+run13 :: String -> IO ()
+run13 file = do
+  putStrLn $ "Running '" ++ file ++ "'"
+  input <- readFile file
+  putStrLn $ (++) "------ Part 1: " $ show $ D13.part1 $ D13.format input
+  putStrLn $ (++) "------ Part 2: " $        D13.part2 $ D13.format input
 
 main :: IO ()
 main = do
@@ -82,3 +43,4 @@ main = do
     runDay "./data/d10.txt" D10.part1 D10.part2 D10.format
     runDay "./data/d11.txt" D11.part1 D11.part2 D11.format
     runDay "./data/d12.txt" D12.part1 D12.part2 D12.format
+    run13"./data/d13.txt"

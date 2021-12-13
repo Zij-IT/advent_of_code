@@ -37,6 +37,7 @@ library
       D10
       D11
       D12
+      D13
 
   other-modules:
       Paths_AdventOfCode
