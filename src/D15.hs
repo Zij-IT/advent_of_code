@@ -29,41 +29,38 @@ spf next target start = find mempty (S.singleton start)
 getNeighbors :: Pair -> [Pair]
 getNeighbors (x, y) = [(x + x', y + y') | (x', y') <- [(-1, 0), (1, 0), (0, -1), (0, 1)]]
 
+withinBounds :: Int -> Int -> Int -> Int -> Bool
+withinBounds w h x y = x >= 0 && y >= 0 && x < w && y < h
+
 index :: [Int] -> Int -> Int -> Int -> Int -> Maybe Int
 index xs width height x y = if withinBounds width height x y
   then Just $ xs !! (width * y + x)
   else Nothing
 
-withinBounds :: Int -> Int -> Int -> Int -> Bool
-withinBounds w h x y = x >= 0 && y >= 0 && x < w && y < h
+sharedSolve :: [Int] -> Int -> Int -> (Int -> Pair -> (Int, Pair)) -> Int
+sharedSolve xs width height costFunc = fst . fromJust $ spf next goal (0, (0, 0))
+  where
+    goal :: Pair
+    goal = (width - 1, height - 1)
 
-sharedSolve :: [Int] -> Int -> Int -> ((Int , Pair) -> [(Int , Pair)]) -> Int
-sharedSolve xs width height next =
-  let goal = (width - 1, height - 1)
-  in fst . fromJust $ spf next goal (0, (0, 0))
+    next :: (Int, Pair) -> [(Int, Pair)]
+    next (cost, curr) = map (costFunc cost)
+      $ filter (uncurry (withinBounds width height))
+      $ getNeighbors curr
 
 part1 :: Input -> Int
-part1 (xs, width, height) = sharedSolve xs width height next
+part1 (xs, width, height) = sharedSolve xs width height cost'
   where
-    next :: (Int, Pair) -> [(Int, Pair)]
-    next (cost, curr) = map cost' . filter (uncurry (withinBounds width height)) $ getNeighbors curr
-      where
-        cost' :: Pair -> (Int, Pair)
-        cost' p@(x,y) = (cost + fromJust (index xs width height x y), p)
+    cost' :: Int -> Pair -> (Int, Pair)
+    cost' cost p@(x,y) = (cost + fromJust (index xs width height x y), p)
 
 part2 :: Input -> Int
-part2 (xs, width, height) = sharedSolve xs fiveWidth fiveHeight next
+part2 (xs, width, height) = sharedSolve xs (width * 5) (height * 5) cost'
   where
-    fiveWidth = width * 5
-    fiveHeight = height * 5
-
-    next :: (Int, Pair) -> [(Int, Pair)]
-    next (cost, curr) = map getCost . filter (uncurry (withinBounds fiveWidth fiveHeight)) $ getNeighbors curr
-      where
-        getCost :: Pair -> (Int, Pair)
-        getCost p@(x,y) =
-          let y' = y `mod` height
-              x' = x `mod` width
-              baseCost = fromJust (index xs width height x' y') + quot x width + quot y height
-              fixedCost = if baseCost > 9 then baseCost - 9 else baseCost
-          in (cost + fixedCost, p)
+    cost' :: Int -> Pair -> (Int, Pair)
+    cost' cost p@(x,y) =
+      let y' = y `mod` height
+          x' = x `mod` width
+          baseCost = fromJust (index xs width height x' y') + quot x width + quot y height
+          fixedCost = if baseCost > 9 then baseCost - 9 else baseCost
+      in (cost + fixedCost, p)
