@@ -39,6 +39,7 @@ library
       D12
       D13
       D14
+      D15
 
   other-modules:
       Paths_AdventOfCode

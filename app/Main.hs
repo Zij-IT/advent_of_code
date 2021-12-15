@@ -14,6 +14,7 @@ import qualified D11
 import qualified D12
 import qualified D13
 import qualified D14
+import qualified D15
 
 runDay :: (Show b, Show c) => String -> (a -> b) -> (a -> c) -> (String -> a) -> IO ()
 runDay file pt1 pt2 format = do
@@ -46,3 +47,4 @@ main = do
     runDay "./data/d12.txt" D12.part1 D12.part2 D12.format
     run13"./data/d13.txt"
     runDay "./data/d14.txt" D14.part1 D14.part2 D14.format
+    runDay "./data/d15.txt" D15.part1 D15.part2 D15.format
