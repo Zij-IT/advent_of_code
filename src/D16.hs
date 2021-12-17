@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
-
 module D16
   ( format
   , part1
@@ -9,7 +7,7 @@ module D16
 import Data.Maybe (fromJust)
 import Data.Bifunctor (first)
 
-type Input = [Int]
+type Input = [Bool]
 type Output = Int
 
 data Packet = Literal  { id :: Int, value :: Int }
@@ -18,10 +16,14 @@ data Packet = Literal  { id :: Int, value :: Int }
 format :: String -> Input
 format = concatMap toBinRep
   where toBinRep c = case c of
-           '0' -> [0, 0, 0, 0]; '4' -> [0, 1, 0, 0]; '8' -> [1, 0, 0, 0]; 'C' -> [1, 1, 0, 0]
-           '1' -> [0, 0, 0, 1]; '5' -> [0, 1, 0, 1]; '9' -> [1, 0, 0, 1]; 'D' -> [1, 1, 0, 1]
-           '2' -> [0, 0, 1, 0]; '6' -> [0, 1, 1, 0]; 'A' -> [1, 0, 1, 0]; 'E' -> [1, 1, 1, 0]
-           '3' -> [0, 0, 1, 1]; '7' -> [0, 1, 1, 1]; 'B' -> [1, 0, 1, 1]; 'F' -> [1, 1, 1, 1]
+           '0' -> [False, False, False, False]; '4' -> [False, True, False, False];
+           '1' -> [False, False, False, True];  '5' -> [False, True, False, True];
+           '2' -> [False, False, True, False];  '6' -> [False, True, True, False];
+           '3' -> [False, False, True, True];   '7' -> [False, True, True, True];
+           '8' -> [True, False, False, False];  'C' -> [True, True, False, False]
+           '9' -> [True, False, False, True];   'D' -> [True, True, False, True]
+           'A' -> [True, False, True, False];   'E' -> [True, True, True, False]
+           'B' -> [True, False, True, True];    'F' -> [True, True, True, True]
            _   -> error "BAD INPUT"
 
 funcFromType :: Int -> ([Int] -> Int)
@@ -29,48 +31,48 @@ funcFromType t = case t of
   0 -> sum    ; 5 -> \[x, y] -> if x >  y then 1 else 0
   1 -> product; 6 -> \[x, y] -> if x <  y then 1 else 0
   2 -> minimum; 7 -> \[x, y] -> if x == y then 1 else 0
-  3 -> maximum;
+  3 -> maximum; _ -> error "BAD TYPE"
 
-binToDec :: [Int] -> Int
-binToDec = foldl (\acc x -> 2 * acc + x) 0
+binToDec :: [Bool] -> Int
+binToDec = foldl (\acc x -> 2 * acc + if x then 1 else 0) 0
 
-getLiteral :: [Int] -> Maybe ([Int], [Int])
+getLiteral :: [Bool] -> Maybe ([Bool], [Bool])
 getLiteral lit = case lit of
-  (0:xs) -> Just $ splitAt 4 xs
-  (1:xs) -> first (take 4 xs ++) <$> getLiteral (drop 4 xs)
+  (True :xs) -> first (take 4 xs ++) <$> getLiteral (drop 4 xs)
+  (False:xs) -> Just $ splitAt 4 xs
+  []         -> Nothing
 
-parseLiteral :: Int -> [Int] -> Maybe (Packet, [Int])
+parseLiteral :: Int -> [Bool] -> Maybe (Packet, [Bool])
 parseLiteral v xs = first (Literal v . binToDec) <$> getLiteral xs
 
-parseSubpackets :: [Int] -> [Packet]
+parseSubpackets :: [Bool] -> [Packet]
 parseSubpackets xs = case parsePacket xs of
   Just (packet, rest) -> packet : parseSubpackets rest
-  Nothing -> []
+  Nothing             -> []
 
-parseNPackets :: Int -> [Int] -> ([Packet], [Int])
+parseNPackets :: Int -> [Bool] -> ([Packet], [Bool])
 parseNPackets n xs = first reverse . fromJust . (!! n) $ iterate conv $ Just ([], xs)
   where conv = \(Just (packets, xs)) -> first (:packets) <$> parsePacket xs
 
-getLengAndParseMethod :: Int -> (Int, Int -> [Int] -> ([Packet], [Int]))
-getLengAndParseMethod 0 = (15, \l xs -> first parseSubpackets $ splitAt l xs)
-getLengAndParseMethod 1 = (11, parseNPackets)
+getLengAndParseMethod :: Bool -> (Int, Int -> [Bool] -> ([Packet], [Bool]))
+getLengAndParseMethod True  = (11, parseNPackets)
+getLengAndParseMethod False = (15, \l xs -> first parseSubpackets $ splitAt l xs)
 
-parseOperator :: Int -> Int -> [Int] -> Maybe (Packet, [Int])
-parseOperator v t [_] = Nothing
+parseOperator :: Int -> Int -> [Bool] -> Maybe (Packet, [Bool])
 parseOperator v t (lengthId : xs) =
     let (len,      parse) = getLengAndParseMethod lengthId
         (count,    rest ) = first binToDec $ splitAt len xs
         (packages, rest') = parse count rest
         op = funcFromType t
     in  Just (Operator v packages op, rest')
+parseOperator v t _ = Nothing
 
-parsePacket' :: Int -> Int -> [Int] -> Maybe (Packet, [Int])
-parsePacket' _ _ [] = Nothing
+parsePacket' :: Int -> Int -> [Bool] -> Maybe (Packet, [Bool])
 parsePacket' v t xs = case t of
     4 -> parseLiteral v xs
     _ -> parseOperator v t xs
 
-parsePacket :: Input -> Maybe (Packet, [Int])
+parsePacket :: Input -> Maybe (Packet, [Bool])
 parsePacket xs =
   let (version,  postV) = first binToDec $ splitAt 3 xs
       (pType,    postP) = first binToDec $ splitAt 3 postV
