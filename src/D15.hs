@@ -7,8 +7,9 @@ module D15
 import Data.Char (digitToInt)
 import Data.Maybe (fromJust)
 import qualified Data.Set as S
+import qualified Data.Vector as V
 
-type Input = ([Int], Int, Int)
+type Input = (V.Vector Int, Int, Int)
 type Pair = (Int, Int)
 
 format :: String -> Input
@@ -16,7 +17,7 @@ format xs =
   let list = concatMap (map digitToInt) $ lines xs
       height = length $ lines xs
       width = length $ head $ lines xs
-  in (list, width, height)
+  in (V.fromList list, width, height)
 
 spf :: ((Int , Pair) -> [(Int , Pair)]) -> Pair -> (Int , Pair) -> Maybe (Int , Pair)
 spf next target start = find mempty (S.singleton start)
@@ -32,12 +33,12 @@ getNeighbors (x, y) = [(x + x', y + y') | (x', y') <- [(-1, 0), (1, 0), (0, -1),
 withinBounds :: Int -> Int -> Int -> Int -> Bool
 withinBounds w h x y = x >= 0 && y >= 0 && x < w && y < h
 
-index :: [Int] -> Int -> Int -> Int -> Int -> Maybe Int
+index :: V.Vector Int -> Int -> Int -> Int -> Int -> Maybe Int
 index xs width height x y = if withinBounds width height x y
-  then Just $ xs !! (width * y + x)
+  then Just $ V.unsafeIndex xs (width * y + x)
   else Nothing
 
-sharedSolve :: [Int] -> Int -> Int -> (Int -> Pair -> (Int, Pair)) -> Int
+sharedSolve :: V.Vector Int -> Int -> Int -> (Int -> Pair -> (Int, Pair)) -> Int
 sharedSolve xs width height costFunc = fst . fromJust $ spf next goal (0, (0, 0))
   where
     goal :: Pair
