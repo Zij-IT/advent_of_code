@@ -24,63 +24,64 @@ format = concatMap toBinRep
            '3' -> [0, 0, 1, 1]; '7' -> [0, 1, 1, 1]; 'B' -> [1, 0, 1, 1]; 'F' -> [1, 1, 1, 1]
            _   -> error "BAD INPUT"
 
-funcFromType :: [Int] -> ([Int] -> Int)
+funcFromType :: Int -> ([Int] -> Int)
 funcFromType t = case t of
-  [0, 0, 0] -> sum    ; [1, 0, 1] -> \[x, y] -> if x >  y then 1 else 0
-  [0, 0, 1] -> product; [1, 1, 0] -> \[x, y] -> if x <  y then 1 else 0
-  [0, 1, 0] -> minimum; [1, 1, 1] -> \[x, y] -> if x == y then 1 else 0
-  [0, 1, 1] -> maximum;
+  0 -> sum    ; 5 -> \[x, y] -> if x >  y then 1 else 0
+  1 -> product; 6 -> \[x, y] -> if x <  y then 1 else 0
+  2 -> minimum; 7 -> \[x, y] -> if x == y then 1 else 0
+  3 -> maximum;
 
-binListToDecimal :: [Int] -> Int
-binListToDecimal = foldl (\acc x -> 2 * acc + x) 0
+binToDec :: [Int] -> Int
+binToDec = foldl (\acc x -> 2 * acc + x) 0
 
 getLiteral :: [Int] -> Maybe ([Int], [Int])
 getLiteral lit = case lit of
   (0:xs) -> Just $ splitAt 4 xs
   (1:xs) -> first (take 4 xs ++) <$> getLiteral (drop 4 xs)
 
-parseLiteral :: [Int] -> [Int] -> Maybe (Packet, [Int])
-parseLiteral v xs = first (Literal (binListToDecimal v) . binListToDecimal) <$> getLiteral xs
+parseLiteral :: Int -> [Int] -> Maybe (Packet, [Int])
+parseLiteral v xs = first (Literal v . binToDec) <$> getLiteral xs
 
-parsePackets :: [Int] -> [Packet]
-parsePackets xs = case parseHierarchy xs of
-  Just (packet, rest) -> packet : parsePackets rest
+parseSubpackets :: [Int] -> [Packet]
+parseSubpackets xs = case parsePacket xs of
+  Just (packet, rest) -> packet : parseSubpackets rest
   Nothing -> []
 
-parseNPackages :: Int -> [Int] -> ([Packet], [Int])
-parseNPackages n xs = first reverse . fromJust . (!! n) $ iterate conv $ Just ([], xs)
-  where conv = \(Just (packets, xs)) -> first (:packets) <$> parseHierarchy xs
+parseNPackets :: Int -> [Int] -> ([Packet], [Int])
+parseNPackets n xs = first reverse . fromJust . (!! n) $ iterate conv $ Just ([], xs)
+  where conv = \(Just (packets, xs)) -> first (:packets) <$> parsePacket xs
 
-parseOperator :: [Int] -> [Int] -> [Int] -> Maybe (Packet, [Int])
-parseOperator v t (lengthId : xs) = if null xs then Nothing else
-    let leng = if lengthId == 0 then 15 else 11
-        (packLeng, rest) = first binListToDecimal $ splitAt leng xs
-        f = if lengthId == 0
-          then first parsePackets . splitAt packLeng 
-          else parseNPackages packLeng
-        version = binListToDecimal v
-        func = funcFromType t
-        (packages, rest') = f rest
-    in Just (Operator version packages func, rest')
+getLengAndParseMethod :: Int -> (Int, Int -> [Int] -> ([Packet], [Int]))
+getLengAndParseMethod 0 = (15, \l xs -> first parseSubpackets $ splitAt l xs)
+getLengAndParseMethod 1 = (11, parseNPackets)
 
-parsePacket :: [Int] -> [Int] -> [Int] -> Maybe (Packet, [Int])
-parsePacket _ _ [] = Nothing
-parsePacket v t xs = case t of
-    [1, 0, 0] -> parseLiteral v xs
-    _         -> parseOperator v t xs
+parseOperator :: Int -> Int -> [Int] -> Maybe (Packet, [Int])
+parseOperator v t [_] = Nothing
+parseOperator v t (lengthId : xs) =
+    let (len,      parse) = getLengAndParseMethod lengthId
+        (count,    rest ) = first binToDec $ splitAt len xs
+        (packages, rest') = parse count rest
+        op = funcFromType t
+    in  Just (Operator v packages op, rest')
 
-parseHierarchy :: Input -> Maybe (Packet, [Int])
-parseHierarchy xs =
-  let (version,  postV) = splitAt 3 xs
-      (pType,    postP) = splitAt 3 postV
-  in parsePacket version pType postP
+parsePacket' :: Int -> Int -> [Int] -> Maybe (Packet, [Int])
+parsePacket' _ _ [] = Nothing
+parsePacket' v t xs = case t of
+    4 -> parseLiteral v xs
+    _ -> parseOperator v t xs
+
+parsePacket :: Input -> Maybe (Packet, [Int])
+parsePacket xs =
+  let (version,  postV) = first binToDec $ splitAt 3 xs
+      (pType,    postP) = first binToDec $ splitAt 3 postV
+  in parsePacket' version pType postP
 
 part1 :: Input -> Int
-part1 = sum . onlyVersions . fst . fromJust . parseHierarchy
+part1 = sum . onlyVersions . fst . fromJust . parsePacket
     where onlyVersions (Literal id _) = [id]
           onlyVersions (Operator id packets _) = id : concatMap onlyVersions packets
 
 part2 :: Input -> Int
-part2 = calcValue . fst . fromJust . parseHierarchy
+part2 = calcValue . fst . fromJust . parsePacket
     where calcValue (Literal _ value) = value
           calcValue (Operator _ packets f) = f $ map calcValue packets
