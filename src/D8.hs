@@ -57,12 +57,7 @@ part1 :: Input -> Int
 part1 = sum . map (length . filter validLength . map length . tail . dropWhile(/= "|"))
   where
     validLength :: Int -> Bool
-    validLength n
-      | n == 2 = True
-      | n == 4 = True
-      | n == 3 = True
-      | n == 7 = True
-      | otherwise = False
+    validLength n  = n == 2 || n == 3 || n == 4 || n == 7
 
 part2 :: Input -> Int
 part2 = sum . map getOutput
