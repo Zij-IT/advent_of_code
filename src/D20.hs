@@ -19,6 +19,10 @@ instance Show Pixel where
 charToPixel '#' = Light
 charToPixel  _  = Dark
 
+flip' :: Pixel -> Pixel
+flip' Light = Dark
+flip' Dark = Light
+
 type Pair = (Int, Int)
 type Grid = M.Map Pair Pixel
 type Input = (V.Vector Pixel, Grid)
@@ -40,8 +44,8 @@ arrToGrid = M.fromList . concatMap pointLines . zip [0..]
 pixelIndex :: Grid -> Pair -> Pixel
 pixelIndex grid pair = fromMaybe Dark (grid M.!? pair)
 
-getThreeGrid :: Grid -> Pair -> [Pixel]
-getThreeGrid grid (x, y) = [M.findWithDefault Dark (x + x', y + y') grid
+getThreeGrid :: Grid -> Pixel -> Pair -> [Pixel]
+getThreeGrid grid def (x, y) = [M.findWithDefault def (x + x', y + y') grid
                            | y' <- [-1..1]
                            , x' <- [-1..1]
                            ]
@@ -49,11 +53,11 @@ getThreeGrid grid (x, y) = [M.findWithDefault Dark (x + x', y + y') grid
 toDecimal :: [Pixel] -> Int
 toDecimal = foldl (\acc x -> 2 * acc + if x == Light then 1 else 0) 0
 
-step :: V.Vector Pixel -> Grid -> Grid
-step header grid = M.mapWithKey keyToNew paddedGrid
+step :: V.Vector Pixel -> (Grid, Pixel) -> (Grid, Pixel)
+step header (grid, color) = (M.mapWithKey keyToNew paddedGrid, flip' color)
   where
     keyToNew :: Pair -> Pixel -> Pixel
-    keyToNew pair _ = (header V.!) . toDecimal . getThreeGrid paddedGrid $ pair
+    keyToNew pair _ = (header V.!) . toDecimal . getThreeGrid paddedGrid color $ pair
 
     (minX, minY) = fst $ M.findMin grid
     (maxX, maxY) = fst $ M.findMax grid
@@ -61,16 +65,19 @@ step header grid = M.mapWithKey keyToNew paddedGrid
     paddedGrid = M.fromList [((x, y), a)
                             | x <- [minX-2..maxX+2]
                             , y <- [minY-2..maxY+2]
-                            , let a = M.findWithDefault Dark (x,y) grid
+                            , let a = M.findWithDefault color (x,y) grid
                             ]
 
-part1 :: Input -> Output
-part1 (header, grid) = length
+solve :: Int -> Input -> Output
+solve n (header, grid) = length
                         . filter (==Light)
                         . M.elems
-                        . (!! 2)
+                        . fst
+                        . (!! n)
                         . iterate (step header)
-                        $ grid
+                        $ (grid, Dark)
 
+part1 :: Input -> Output
+part1 = solve 2
 part2 :: Input -> Output
-part2 (header, grid) = 0
+part2 = solve 50
