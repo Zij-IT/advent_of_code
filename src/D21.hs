@@ -58,6 +58,4 @@ solve game@(one@(_, s1), two@(_, s2))
           return result
 
 part2 :: Input -> Output
-part2 (one, two) =
-  let (x, y) = evalState (solve ((one, 0), (two, 0))) M.empty
-  in max x y
+part2 (one, two) = uncurry max $ evalState (solve ((one, 0), (two, 0))) M.empty
