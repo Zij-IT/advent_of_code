@@ -19,7 +19,8 @@ import qualified D16
 import qualified D17
 import qualified D18
 -- import qualified D19
-import qualified D20
+-- import qualified D20
+import qualified D21
 
 runDay :: (Show b, Show c) => String -> (a -> b) -> (a -> c) -> (String -> a) -> IO ()
 runDay file pt1 pt2 format = do
@@ -57,4 +58,5 @@ main = do
     runDay "./data/d17.txt" D17.part1 D17.part2 D17.format
     runDay "./data/d18.txt" D18.part1 D18.part2 D18.format
     -- runDay "./data/d19.txt" D19.part1 D19.part2 D19.format
-    runDay "./data/d20.txt" D20.part1 D20.part2 D20.format
+    -- runDay "./data/d20.txt" D20.part1 D20.part2 D20.format
+    runDay "./data/d21.txt" D21.part1 D21.part2 D21.format

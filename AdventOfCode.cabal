@@ -45,6 +45,7 @@ library
       D18
       D19
       D20
+      D21
 
   other-modules:
       Paths_AdventOfCode
@@ -55,6 +56,7 @@ library
     , containers >=0.6.5.1
     , split >=0.2.3.4
     , vector >= 0.12.3.1
+    , mtl >= 2.2.2
   default-language: Haskell2010
 
 executable AdventOfCode-exe
