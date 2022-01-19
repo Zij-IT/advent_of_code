@@ -26,15 +26,15 @@ source-repository head
 library
   exposed-modules:
       Year21
-      Year21.D1
-      Year21.D2
-      Year21.D3
-      Year21.D4
-      Year21.D5
-      Year21.D6
-      Year21.D7
-      Year21.D8
-      Year21.D9
+      Year21.D01
+      Year21.D02
+      Year21.D03
+      Year21.D04
+      Year21.D05
+      Year21.D06
+      Year21.D07
+      Year21.D08
+      Year21.D09
       Year21.D10
       Year21.D11
       Year21.D12

@@ -2,15 +2,15 @@ module Year21
   ( runDay
   ) where
 
-import qualified Year21.D1
-import qualified Year21.D2
-import qualified Year21.D3
-import qualified Year21.D4
-import qualified Year21.D5
-import qualified Year21.D6
-import qualified Year21.D7
-import qualified Year21.D8
-import qualified Year21.D9
+import qualified Year21.D01
+import qualified Year21.D02
+import qualified Year21.D03
+import qualified Year21.D04
+import qualified Year21.D05
+import qualified Year21.D06
+import qualified Year21.D07
+import qualified Year21.D08
+import qualified Year21.D09
 import qualified Year21.D10
 import qualified Year21.D11
 import qualified Year21.D12

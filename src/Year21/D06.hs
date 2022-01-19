@@ -1,4 +1,4 @@
-module Year21.D6 ( format
+module Year21.D06 ( format
           , part1
           , part2
           ) where
