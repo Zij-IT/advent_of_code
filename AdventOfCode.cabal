@@ -25,28 +25,29 @@ source-repository head
 
 library
   exposed-modules:
-      D1
-      D2
-      D3
-      D4
-      D5
-      D6
-      D7
-      D8
-      D9
-      D10
-      D11
-      D12
-      D13
-      D14
-      D15
-      D16
-      D17
-      D18
-      D19
-      D20
-      D21
-      D22
+      Year21
+      Year21.D1
+      Year21.D2
+      Year21.D3
+      Year21.D4
+      Year21.D5
+      Year21.D6
+      Year21.D7
+      Year21.D8
+      Year21.D9
+      Year21.D10
+      Year21.D11
+      Year21.D12
+      Year21.D13
+      Year21.D14
+      Year21.D15
+      Year21.D16
+      Year21.D17
+      Year21.D18
+      Year21.D19
+      Year21.D20
+      Year21.D21
+      Year21.D22
 
   other-modules:
       Paths_AdventOfCode

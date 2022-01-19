@@ -1,4 +1,4 @@
-module D13
+module Year21.D13
   ( format
   , part1
   , part2
@@ -10,6 +10,11 @@ import Data.List.Split (splitOn)
 import Data.Function (on)
 
 data Fold = X Int | Y Int
+
+newtype ShowableString = ShowableString String
+
+instance Show ShowableString where
+  show (ShowableString s) = s
 
 type Pair = (Int, Int)
 type Input = ([Pair], [Fold])
@@ -35,11 +40,11 @@ foldSet coords fold = S.map (func fold) coords
 part1 :: Input -> Int
 part1 (coords, folds) = S.size $ foldSet (S.fromList coords) (head folds)
 
-part2 :: Input -> String
+part2 :: Input -> ShowableString
 part2 (coords, folds) =
   let set = foldl foldSet (S.fromList coords) folds
       isX (X _) = True
       isX (Y _) = False
       maxX = minimum $ map (\(X x) -> x) $ filter isX folds
       maxY = minimum $ map (\(Y y) -> y) $ filter (not . isX) folds
-  in '\n' : concat [(if S.member (x', y') set then "#" else " ") ++ (if x' == maxX then "\n" else "") | y' <- [0..maxY], x' <- [0..maxX]]
+  in ShowableString $ '\n' : concat [(if S.member (x', y') set then "#" else " ") ++ (if x' == maxX then "\n" else "") | y' <- [0..maxY], x' <- [0..maxX]]

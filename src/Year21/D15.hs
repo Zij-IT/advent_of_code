@@ -1,4 +1,4 @@
-module D15
+module Year21.D15
   ( format
   , part1
   , part2

@@ -1,4 +1,4 @@
-module D11
+module Year21.D11
   ( format
   , part1
   , part2

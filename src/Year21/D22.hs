@@ -1,5 +1,5 @@
 {-# LANGUAGE TupleSections #-}
-module D22
+module Year21.D22
   ( format
   , part1
   , part2
