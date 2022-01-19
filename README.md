@@ -8,7 +8,6 @@ If you are interested in running my solutions, feel free to follow these steps. 
 
 ```
 > git@github.com:Zij-IT/advent_of_code.git
-
 > cd adent_of_code
 > cabal run
 ```
