@@ -42,15 +42,15 @@ runDay' day format pt1 pt2 = do
 
 runDay :: Int -> IO ()
 runDay day = case day of
-  1  -> runDay' day Year21.D1.format  Year21.D1.part1  Year21.D1.part2
-  2  -> runDay' day Year21.D2.format  Year21.D2.part1  Year21.D2.part2
-  3  -> runDay' day Year21.D3.format  Year21.D3.part1  Year21.D3.part2
-  4  -> runDay' day Year21.D4.format  Year21.D4.part1  Year21.D4.part2
-  5  -> runDay' day Year21.D5.format  Year21.D5.part1  Year21.D5.part2
-  6  -> runDay' day Year21.D6.format  Year21.D6.part1  Year21.D6.part2
-  7  -> runDay' day Year21.D7.format  Year21.D7.part1  Year21.D7.part2
-  8  -> runDay' day Year21.D8.format  Year21.D8.part1  Year21.D8.part2
-  9  -> runDay' day Year21.D9.format  Year21.D9.part1  Year21.D9.part2
+  1  -> runDay' day Year21.D01.format Year21.D01.part1 Year21.D01.part2
+  2  -> runDay' day Year21.D02.format Year21.D02.part1 Year21.D02.part2
+  3  -> runDay' day Year21.D03.format Year21.D03.part1 Year21.D03.part2
+  4  -> runDay' day Year21.D04.format Year21.D04.part1 Year21.D04.part2
+  5  -> runDay' day Year21.D05.format Year21.D05.part1 Year21.D05.part2
+  6  -> runDay' day Year21.D06.format Year21.D06.part1 Year21.D06.part2
+  7  -> runDay' day Year21.D07.format Year21.D07.part1 Year21.D07.part2
+  8  -> runDay' day Year21.D08.format Year21.D08.part1 Year21.D08.part2
+  9  -> runDay' day Year21.D09.format Year21.D09.part1 Year21.D09.part2
   10 -> runDay' day Year21.D10.format Year21.D10.part1 Year21.D10.part2
   11 -> runDay' day Year21.D11.format Year21.D11.part1 Year21.D11.part2
   12 -> runDay' day Year21.D12.format Year21.D12.part1 Year21.D12.part2
@@ -64,7 +64,7 @@ runDay day = case day of
   20 -> runDay' day Year21.D20.format Year21.D20.part1 Year21.D20.part2
   21 -> runDay' day Year21.D21.format Year21.D21.part1 Year21.D21.part2
   22 -> runDay' day Year21.D22.format Year21.D22.part1 Year21.D22.part2
-  -- 23 -> runDay' (fileFromDay day) Year21.D23.format Year21.D23.part1 Year21.D23.part2
-  -- 24 -> runDay' (fileFromDay day) Year21.D24.format Year21.D24.part1 Year21.D24.part2
-  -- 25 -> runDay' (fileFromDay day) Year21.D25.format Year21.D25.part1 Year21.D25.part2
+  -- 23 -> runDay' day Year21.D23.format Year21.D23.part1 Year21.D23.part2
+  -- 24 -> runDay' day Year21.D24.format Year21.D24.part1 Year21.D24.part2
+  -- 25 -> runDay' day Year21.D25.format Year21.D25.part1 Year21.D25.part2
   _  -> error "Invalid day."
